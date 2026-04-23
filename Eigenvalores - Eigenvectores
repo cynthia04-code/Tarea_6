@@ -1,0 +1,50 @@
+import numpy as np
+from sympy import Matrix
+
+# Definición de las matrices 
+
+# Coeficientes de fracciones
+A_a = Matrix([
+    [1, 1/2, 1/3],
+    [1/2, 1/3, 1/4],
+    [1/3, 1/4, 1/5]
+])
+
+# Sistema de 4x4 (Vandermonde modificada)
+A_b = Matrix([
+    [1, 1, 1, 1],
+    [1.01, 1.02, 1.03, 1.04],
+    [1.01**2, 1.02**2, 1.03**2, 1.04**2],
+    [1.01**3, 1.02**3, 1.03**3, 1.04**3]
+])
+
+# Sistema 2x2 mal condicionado
+A_c = Matrix([
+    [1, 2],
+    [2, 4.0001]
+])
+
+def calcular_eigen(nombre, mat_sympy):
+    print(f"\n{'='*20} MATRIZ {nombre} {'='*20}")
+    
+    # Cálculo Numérico con Numpy
+    A_np = np.array(mat_sympy.tolist(), dtype=float)
+    vals_np, vecs_np = np.linalg.eig(A_np)
+    
+    print("\n--- Resultados Numéricos (Numpy) ---")
+    print("Eigenvalores:\n", vals_np)
+    print("Eigenvectores (columnas):\n", vecs_np)
+    
+    # Cálculo Simbólico con Sympy
+    print("\n--- Resultados Exactos (Sympy) ---")
+    eigen_data = mat_sympy.eigenvects()
+    
+    for i, (val, mult, vecs) in enumerate(eigen_data):
+        print(f"\nEigenvalor {i+1}: {val} (Mult: {mult})")
+        for j, vec in enumerate(vecs):
+            print(f"  Vector {j+1}: {vec.tolist()}")
+
+# Matrices
+calcular_eigen("A", A_a)
+calcular_eigen("B", A_b)
+calcular_eigen("C", A_c)
